@@ -3,8 +3,9 @@ from .models import Post, Group
 
 
 def index(request):
+    displayed_posts = 10
     title = 'Последние обновления на сайте'
-    posts = Post.objects.order_by('-pub_date')[:10]
+    posts = Post.objects.select_related('group')[:displayed_posts]
     context = {
         'title': title,
         'posts': posts,
@@ -13,8 +14,9 @@ def index(request):
 
 
 def group_posts(request, slug):
+    displayed_posts = 10
     group = get_object_or_404(Group, slug=slug)
-    posts = Post.objects.filter(group=group).order_by('-pub_date')[:10]
+    posts = group.posts.all()[:displayed_posts]
     context = {
         'group': group,
         'posts': posts,
